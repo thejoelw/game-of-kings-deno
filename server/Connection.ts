@@ -7,7 +7,7 @@ import { UserModule } from '~/common/modules.ts';
 import { hash } from '~/common/hash.ts';
 
 export default class Connection {
-  public uuid = crypto.randomUUID();
+  public uuid = Math.random().toString(36).slice(2);
 
   private ctx: VerifierCtx = {};
   private userId?: string;

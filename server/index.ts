@@ -2,7 +2,6 @@ import { serve, serveTls } from 'std-latest/http/server.ts';
 import Connection from '~/server/Connection.ts';
 import { updateDns } from '~/server/updateDns.ts';
 
-const useDenoServe = true;
 
 const serverRestartInterval = 1000 * 60 * 60 * 24 * 7 * 0.7;
 
@@ -60,10 +59,10 @@ const handler = async (req: Request) => {
     return response;
   }
 
-  if (!prefixes.some((pfx) => req.url.startsWith(pfx))) {
-    console.error(`Discarding request to url ${req.url}`);
-    return new Response(null, { status: 404 });
-  }
+  // if (!prefixes.some((pfx) => req.url.startsWith(pfx))) {
+  //   console.error(`Discarding request to url ${req.url}`);
+  //   return new Response(null, { status: 404 });
+  // }
 
   let path = staticDir + (new URL(req.url)).pathname;
   if (path.endsWith('/')) {
@@ -94,17 +93,11 @@ const redirectHandler = (req: Request) =>
 const doServeHttp = (
   handler: (req: Request) => Response | Promise<Response>,
   opts: Deno.ServeOptions,
-) =>
-  useDenoServe
-    ? Deno.serve({ handler, ...opts }).finished
-    : serve(handler, opts);
+) => Deno.serve({ handler, ...opts }).finished
 const doServeHttps = (
   handler: (req: Request) => Response | Promise<Response>,
-  opts: Deno.ServeTlsOptions,
-) =>
-  useDenoServe
-    ? Deno.serve({ handler, ...opts }).finished
-    : serveTls(handler, opts);
+  opts: Deno.ServeOptions,
+) => Deno.serve({ handler, ...opts }).finished
 
 while (true) {
   const restartController = new AbortController();
@@ -112,22 +105,22 @@ while (true) {
 
   if (useHttps) {
     const mainServer = doServeHttps(handler, {
-      port: mainPort,
+      // port: mainPort,
       signal: restartController.signal,
 
-      key: await Deno.readTextFile(getEnvVar('TLS_KEY_FILE')),
-      cert: await Deno.readTextFile(getEnvVar('TLS_CERT_FILE')),
+      // key: await Deno.readTextFile(getEnvVar('TLS_KEY_FILE')),
+      // cert: await Deno.readTextFile(getEnvVar('TLS_CERT_FILE')),
     });
 
     const upgradeServer = doServeHttp(redirectHandler, {
-      port: parseInt(getEnvVar('HTTP_PORT')),
+      // port: parseInt(getEnvVar('HTTP_PORT')),
       signal: restartController.signal,
     });
 
     await Promise.all([mainServer, upgradeServer]);
   } else {
     await doServeHttp(handler, {
-      port: mainPort,
+      // port: mainPort,
       signal: restartController.signal,
     });
   }

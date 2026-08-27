@@ -10,11 +10,11 @@ import * as secp from 'secp256k1';
 // import { crypto } from 'std-latest/crypto/mod.ts';
 import { HmacSha256 } from 'https://deno.land/std@0.160.0/hash/sha256.ts';
 
-secp.etc.hmacSha256Sync = (key, ...msgs) => {
-  const algo = new HmacSha256(key);
-  msgs.forEach((msg) => algo.update(msg));
-  return new Uint8Array(algo.digest());
-};
+// secp.etc.hmacSha256Sync = (key, ...msgs) => {
+//   const algo = new HmacSha256(key);
+//   msgs.forEach((msg) => algo.update(msg));
+//   return new Uint8Array(algo.digest());
+// };
 
 export default secp;
 

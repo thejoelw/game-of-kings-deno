@@ -76,7 +76,7 @@ export default ({ onClose }: { onClose: () => void }) => {
     <Form
       onSubmit={() => {
         send('extendChallenge', {
-          id: crypto.randomUUID(),
+          id: Math.random().toString(36).slice(2),
           challengerId: userId,
           variant: Object.fromEntries(fields.map((f) => [f.key, f.value])),
         });

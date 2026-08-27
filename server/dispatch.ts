@@ -151,7 +151,7 @@ const dispatchers: { [key: string]: (conn: Connection, arg: any) => void } = {
       throw new Error(`Invalid challengeId: ${arg.challengeId}`);
     }
 
-    const matchId = crypto.randomUUID();
+    const matchId = Math.random().toString(36).slice(2);
 
     const players = [challenge.challengerId, conn.getUserId()].map((
       userId,
